@@ -1,0 +1,219 @@
+# If you want to include mentions to members or ping a channel use &<member> &<role-id> &<channel-id>
+
+bot:
+  owner: your-id
+  # Input your User-ID here
+  test_server: server-id
+  # Used if you are making your own edits to the bot
+
+  token: token-id
+  # Discord Bot Token
+
+  status: At your service
+  # Bot Status Message
+
+  prefix: .
+  # Bot prefix for commands
+
+  console_channel: channel-id
+  # Channel Id for channel to monitor bot actions / errors
+
+  # ---------------------------------------------------------------------
+  # Ignore Settings
+  # ----------------------------------------------------------------------
+  # filter: false
+  # Auto Ban/Kick/Timeout terms found within applications or the server
+
+  # blacklist: false
+  # Stops blacklisted users from using the bot
+
+  # info_commands: false
+  # Custom commands that return a reply. Note this does not make them slash commands you must use prefix commands for this to work
+
+applications:
+  enabled: false
+  # Enables the applications package
+
+  timeout: 5
+  # Time in Minutes
+
+  member_role: role-id
+  # Member role if applicants are accepted. Note this setting only works if you don't have interviews enabled
+
+  join_message: Welcome to the server to apply click the button below
+  # Message sent to user when they join the discord server
+
+  welcome_channel: channel-id
+  # The channel that users who are accepted will be welcomed to the server. Note this setting only works if you don't have interviews enabled
+
+  welcome_message: Welcome &<member>
+  # The welcome message sent to welcome channel
+
+  applications_channel: channel-id
+  #The channel that filled applications will be sent to
+
+  questions:
+
+interviews:
+  enabled: false
+  # Enables the interview package
+
+  member_role: role-id
+  # Member role if user is accepted
+
+  notification: "Hi an admin will be with you shortly"
+  # Notification sent once thread will be created.
+
+  interview_role: role-id
+  # Interview role
+
+  interview_channel: channel-id
+  # Interview channel where threads will be created for interviews
+
+  welcome_channel: channel-id
+  # The channel that users who are accepted will be welcomed to the server.
+
+  welcome_message: Welcome &<member>
+  # The welcome message sent to welcome channel
+
+  #--------------------------------------------------------
+  # Ignore settings
+  # --------------------------------------------------------
+  #auto_close: false
+  # Auto closes thread once application is done, can also be done with !close or /close
+
+  # auto_delete: false
+  # Auto deletes thread once it is closed
+
+  # private_threads: false
+  # THIS WILL NOT WORK IF YOU ARE NOT AT THE APPROPRIATE SERVER BOOST LEVEL
+  #--------------------------------------------------------
+
+# # -----------------------------------------------------
+# # Integration with Pterodactyl Panel
+# # https://pterodactyl.io/
+# # -----------------------------------------------------
+
+pterodactyl:
+  enabled: false
+  # Enables the pterodactyl package
+
+  host: https://your.panel.com/
+  # Host for Pterodactyl Panel
+
+  servers:
+    # List of servers for pterodactyl integration
+
+    - server_id
+    - server_id
+
+  api_token: api-token
+  # Generated API Key for Host
+  # A user can generate an client API key from: https://pterodactyl.app/account/api An admin can generate an application API key from: https://pterodactyl.app/admin/api
+
+  whitelist: false
+  # Enables auto whitelisting and auto unwhitelisting
+
+  # ---------------------------------------------------------------------
+  # Ignore Settings
+  # ----------------------------------------------------------------------
+
+  # server_statuses: false
+  # Updates Bot status with servers status specified above
+  # Overides Bot Status field
+
+# -----------------------------------------------------
+# Integration with Plan Player Analytics
+# https://github.com/plan-player-analytics/Plan/wiki
+# -----------------------------------------------------
+
+plan:
+  enabled: false
+  # Enables interacting with Plan Player Analytics
+
+  database:
+    type: MYSQL
+    # Supported databases:"MYSQL", "POSTGRESQL","MARIADB"
+    host: 192.168.1.1
+    # Host for database e.g 192.168.1.1 | localhost | database.com
+    port: 3306
+    # Port the database is host on
+    user: plan
+    # Username for database
+    password: plan
+    # Password for database
+    database: plan
+    # Name of the database
+  inactivity:
+    enabled: false
+    # Enables kicking users once they are removed from plan player analytics
+
+    message: You have been removed for inactivity
+    # Inactive message sent to user once removed
+
+    # days_until_kicked:
+    #   enabled: false
+    #   # Enables users to see when is the day until a user is kicked for inactivity
+
+    #   channels:
+    #     # List of channels this command is allowed
+
+    #     - channel-id
+    #     - channel-id
+
+  # last_login:
+  #   # Enables users to see when was the last login date of a user
+
+  #   enabled: false
+  #   # Enables last login command
+
+  #   channels:
+  #     # List of channels this command is allowed
+
+  #     - channel-id
+  #     - channel-id
+# ---------------------------------------------------------
+# Ignore below these are settings for planned features
+# ---------------------------------------------------------
+
+# reaction_roles:
+#   enabled: false
+#   # Enables reaction roles
+#   reaction_channel: channel-id
+#   # Channel ID of the channel where roles are to be picked from
+
+# reddit:
+#   enabled: false
+#   # Enables posting to reddit read here on how to fill out the values below https://www.reddit.com/wiki/api/
+#   user_agent: user-agent
+
+#   client_id: client-id
+
+#   client_secret: client-secret
+
+#   username: username
+
+#   password: password
+
+# # -----------------------------------------------------
+# # Supported time units: ["MILLISECONDS"], ["SECONDS"], ["MINUTES"], ["HOURS"], ["DAYS"] <-- Note The [""]
+# # -----------------------------------------------------
+
+# periodic_tasks:
+#   post_to_reddit_every:
+#     time: 1
+#     unit: ["DAYS"]
+
+#   clean_whitelist_every:
+#     time: 1
+#     unit: ["DAYS"]
+
+#   inactivity_notice:
+#     time: 7
+#     unit: ["DAYS"]
+#     # Inactivity notice before playeris kicked
+
+#   remove_inactive_player_data_after:
+#     time: 3650
+#     unit: ["DAYS"]
+#     # Ensure the settings above is the same as the settings in your plan configurations
