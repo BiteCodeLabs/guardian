@@ -56,7 +56,7 @@ export async function postApplication(
   var embed = new MessageEmbed()
     .setColor("YELLOW")
     .setAuthor(author)
-    .setTitle(`${member} has submitted an application`)
+    .setTitle(`${member.user} has submitted an application`)
     .setThumbnail(
       member.displayAvatarURL({
         dynamic: true,
@@ -65,59 +65,24 @@ export async function postApplication(
     .setTimestamp();
 
   // Solution is from https://github.com/Milrato-Development/Easiest-Application go check them out >.>
-  for (var i = 0; i < response.length; i++) {
-    try {
+  try {
+    for (var i = 0; i < response.length; i++) {
       let qu = response[i].question;
       if (qu.length > 100) qu = response[i].question.substring(0, 100) + " ...";
       embed.addField(
         qu.substring(0, 256),
         ">>> " + response[i].content.substring(0, 1000)
       );
-    } catch (error) {
-      logger.error(
-        `Error while submitting user application ${response}: \n`,
-        error
-      );
     }
+
+    applicationChannel.send({
+      embeds: [embed],
+      components: [row],
+    });
+  } catch (error) {
+    logger.error(
+      `Error while submitting user application ${response}: \n`,
+      error
+    );
   }
-
-  applicationChannel.send({
-    embeds: [embed],
-  });
-
-  // let arr = [];
-  // for (const entry of response) {
-  //   const embed = new MessageEmbed()
-  //     .setAuthor(author)
-  //     .setColor("YELLOW")
-  //     .setTimestamp()
-  //     .setDescription(
-  //       `Question# ${entry.number}\n${entry.question}\n ${entry.content}`
-  //     );
-
-  //   arr.push(embed);
-  // }
-
-  // var size = 5;
-  // var arrayOfArrays: any[] = [];
-  // for (var i = 0; i < arr.length; i += size) {
-  //   arrayOfArrays.push(arr.slice(i, i + size));
-  // }
-
-  // let messageArray: any[] = [];
-  // let message: MessageEmbed[];
-  // //   Final Message is declared so that we can attach messages to the end of it for denying or banning memebers
-  // let finalMessage: Message;
-  // for (message of arrayOfArrays) {
-  //   var last = arrayOfArrays[arrayOfArrays.length - 1];
-  //   const questions = await applicationChannel.send({
-  //     embeds: message,
-  //     components: [],
-  //   });
-  //   if (message === last) {
-  //     finalMessage = await questions.edit({ components: [row] });
-  //   }
-
-  //   messageArray.push(questions);
-  // }
 }
