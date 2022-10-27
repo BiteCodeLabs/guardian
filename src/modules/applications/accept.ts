@@ -1,9 +1,10 @@
-import { GuildMember, TextChannel } from "discord.js";
-import { client, config } from "../..";
+import { client } from "../..";
 import { logger } from "../logger";
+import { Config } from "../../types";
 import { conductInterview } from "./interview";
+import { GuildMember, TextChannel } from "discord.js";
 
-export async function acceptMember(member: GuildMember) {
+export async function acceptMember(member: GuildMember, config: Config) {
   const { applications, interviews } = config;
   if (interviews.enabled) {
     return conductInterview(member);
