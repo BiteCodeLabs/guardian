@@ -1,4 +1,5 @@
 import { Client } from "discord.js";
+import { sendQuestions } from "../modules/applications/questions";
 import { logger } from "../modules/logger";
 
 // Change to Modals for Deny and ban interactions
@@ -8,9 +9,11 @@ export default (client: Client) => {
 
     if (interaction.customId === "apply") {
       logger.info(`${interaction.member} has used `);
+
+      const member = interaction.guild?.members.cache.get(interaction.user.id);
+      sendQuestions(member!);
     }
 
-    interaction.message.id;
     // if (interaction.customId === "accept") {
     //   logger.info(`Accepted Member`);
     // }
