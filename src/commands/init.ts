@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import { ICommand } from "wokcommands";
 import { config } from "..";
+import { logger } from "../modules/logger";
 
 export default {
   category: "Applications",
@@ -21,12 +22,19 @@ export default {
       config.bot.join_channel
     ) as TextChannel;
 
+    if (!joinChannel) {
+      logger.error(
+        "Join channel was not detected... please check your configs and reload the bot"
+      );
+      return "Join channel was not detected... please check your configs and reload the bot";
+    }
+
     const row = new MessageActionRow();
 
     const embed = new MessageEmbed()
       .setColor("BLUE")
       .addFields({
-        name: "Join Message",
+        name: "Hi",
         value: `${config.applications.join_message}`,
         inline: true,
       })
@@ -42,7 +50,7 @@ export default {
 
     await joinChannel.send({
       embeds: [embed],
-      components: [],
+      components: [row],
     });
   },
 } as ICommand;
