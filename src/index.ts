@@ -11,8 +11,10 @@ import { logger } from "./modules/logger";
 import { Client, Intents } from "discord.js";
 
 export const config = YAML.load(
-  fs.readFileSync("config.yml", "utf-8")
+  fs.readFileSync("config/config.yml", "utf-8")
 ) as Config;
+
+initDB();
 
 if (!config) {
   logger.error("No config file detected");
