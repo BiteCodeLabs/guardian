@@ -64,13 +64,13 @@ export async function postApplication(
     )
     .setTimestamp();
 
-  //for each question add a field
+  // Solution is from https://github.com/Milrato-Development/Easiest-Application go check them out >.>
   for (var i = 0; i < response.length; i++) {
     try {
       let qu = response[i].question;
       if (qu.length > 100) qu = response[i].question.substring(0, 100) + " ...";
       embed.addField(
-        ("**" + response[i] + ". |** " + qu).substring(0, 256),
+        qu.substring(0, 256),
         ">>> " + response[i].content.substring(0, 1000)
       );
     } catch (error) {
@@ -80,6 +80,10 @@ export async function postApplication(
       );
     }
   }
+
+  applicationChannel.send({
+    embeds: [embed],
+  });
 
   // let arr = [];
   // for (const entry of response) {
