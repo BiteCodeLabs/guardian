@@ -110,3 +110,5 @@ build/
 config/
 
 config.yml
+
+db.sqlite
