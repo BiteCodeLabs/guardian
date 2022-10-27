@@ -2,23 +2,25 @@
 import fs from "fs";
 import path from "path";
 import YAML from "js-yaml";
-import Inactive from "./utils/plan";
 import WOKCommands from "wokcommands";
 import schedule from "node-schedule";
-import { Client, Intents } from "discord.js";
 
+import { initDB } from "./db";
 import { Config } from "./types";
+import { inactive } from "./modules/plan";
+import { logger } from "./modules/logger";
+import { Client, Intents } from "discord.js";
 
 export const config = YAML.load(
   fs.readFileSync("config.yml", "utf-8")
 ) as Config;
 
 if (!config) {
-  console.log("No config file detected");
+  logger.error("No config file detected");
   process.exit(1);
 }
 
-console.log(config.applications.questions);
+initDB();
 
 // Import bot intents needed
 
@@ -35,18 +37,20 @@ export const client = new Client({
 // Once the client has connected to discord this function will configure the WOK command handler
 
 client.on("ready", async () => {
-  schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
-    const message = "Running Daily Check";
-    console.log(message);
-    await Inactive(client);
-  });
+  const botGuild = await client.guilds.fetch(config.bot.server);
+
+  if (config.plan.inactivity.enabled) {
+    schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
+      await inactive(botGuild, client);
+    });
+  }
 
   client.user!.setActivity(config.bot.status, { type: "WATCHING" });
 
   new WOKCommands(client, {
     featureDir: path.join(__dirname, "events"),
     commandDir: path.join(__dirname, "commands"),
-    testServers: config.bot.test_server,
+    testServers: config.bot.server,
     botOwners: [config.bot.owner],
     typeScript: false,
   }).setDefaultPrefix(config.bot.prefix);

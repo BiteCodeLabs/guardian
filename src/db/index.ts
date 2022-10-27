@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import mysql from "mysql2";
 import { config } from "..";
 import sqlite from "sqlite3";
@@ -10,7 +9,15 @@ import { logger } from "../modules/logger";
 // Creates a database and then execute create table query
 const db = new sqlite.Database("db.sqlite");
 
-db.exec(fs.readFileSync("/sql/create-tables.sql").toString());
+export function initDB() {
+  db.exec(
+    "CREATE TABLE IF NOT EXISTS applications_cache (message_id VARCHAR(18) PRIMARY KEY,member_id VARCHAR(18))"
+  );
+
+  db.exec(
+    "CREATE TABLE IF NOT EXISTS links (mojang_id VARCHAR(36) PRIMARY KEY, discord_id VARCHAR(18), grace_period INTEGER)"
+  );
+}
 
 // Checks the link of a given user
 export function checkLink(mojangId: string) {
