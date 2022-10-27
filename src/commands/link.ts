@@ -77,6 +77,14 @@ export default {
           .setTimestamp();
 
         await msgInt.reply({ embeds: [embed] });
+
+        if (!config.pterodactyl) {
+          logger.warn(
+            "Pterodactyl module has not been enabled or is missing from your config file"
+          );
+          return "Pterodactyl module has not been enabled or is missing from your config file";
+        }
+
         whitelist(ign, config.pterodactyl);
       } catch (error) {
         console.log(error);

@@ -62,8 +62,14 @@ export async function inactive(guild: Guild, client: Client) {
 
         await member.send(config.plan.inactivity.message);
         await guild.members.kick(member);
-        await unwhitelist(user.mojang_id, config.pterodactyl);
         removeLink(user.mojang_id, user.discord_id);
+        if (!config.pterodactyl) {
+          logger.warn(
+            "Pterodactyl module has not been enabled or is missing from your config file"
+          );
+          return "Pterodactyl module has not been enabled or is missing from your config file";
+        }
+        await unwhitelist(user.mojang_id, config.pterodactyl);
       }
     }
   } catch (error) {

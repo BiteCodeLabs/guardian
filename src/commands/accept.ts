@@ -4,6 +4,7 @@ import { checkLink, createLink } from "../db";
 import { config } from "..";
 import { getId } from "../modules/mojang";
 import { whitelist } from "../modules/ptero";
+import { logger } from "../modules/logger";
 
 export default {
   category: "Interviews",
@@ -96,6 +97,13 @@ export default {
       // White lists user
       //TODO Change to proper whitelist config
       if (id) {
+        if (!config.pterodactyl) {
+          logger.warn(
+            "Pterodactyl module has not been enabled or is missing from your config file"
+          );
+          return "Pterodactyl module has not been enabled or is missing from your config file";
+        }
+
         await whitelist(ign, config.pterodactyl);
       }
 
