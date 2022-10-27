@@ -9,8 +9,7 @@
   "private": false,
   "scripts": {
     "build": "tsc",
-    "start": "node build/index.js",
-    "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\""
+    "start": "node build/index.js"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.8",
