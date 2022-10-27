@@ -1,6 +1,7 @@
 import { config } from "../..";
 import { logger } from "../logger";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { postApplication } from "./applications";
 
 // Change to Modal System
 export async function sendQuestions(member: GuildMember) {
@@ -57,7 +58,7 @@ export async function sendQuestions(member: GuildMember) {
           return { number, question, content };
         });
 
-        //   await sendApplication(responses, member);
+        await postApplication(responses, member);
       }
     });
   } catch (error) {
