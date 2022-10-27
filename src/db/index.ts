@@ -1,7 +1,6 @@
 import mysql from "mysql2";
-import { config } from "..";
 import sqlite from "sqlite3";
-import { ApplicationCache, Link } from "../types";
+import { ApplicationCache, Database, Link } from "../types";
 import { logger } from "../modules/logger";
 
 // SQLITE
@@ -88,19 +87,17 @@ export function getApplication(message_id: string) {
   }
 }
 
-//  MYSQL
-
-const dbConfig = config.plan.database;
-
-const connection = mysql.createConnection({
-  user: dbConfig.user,
-  password: dbConfig.password,
-  host: dbConfig.host,
-  database: dbConfig.database,
-});
-
 // Gets Plan user from database
-export function getPlanUser(mojangId: string) {
+export function getPlanUser(mojangId: string, database: Database) {
+  //  MYSQL
+
+  const connection = mysql.createConnection({
+    user: database.user,
+    password: database.password,
+    host: database.host,
+    database: database.database,
+  });
+
   connection.query(
     "SELECT uuid FROM plan_users WHERE uuid=?",
     [mojangId],

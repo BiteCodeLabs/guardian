@@ -1,8 +1,9 @@
 import { ICommand } from "wokcommands";
 import { MessageEmbed, TextChannel, User } from "discord.js";
-import { checkLink, createLink, getServers } from "../db";
-import { getId, whitelist } from "../utils/misc";
+import { checkLink, createLink } from "../db";
 import { config } from "..";
+import { getId } from "../modules/mojang";
+import { whitelist } from "../modules/ptero";
 
 export default {
   category: "Interviews",
@@ -95,7 +96,7 @@ export default {
       // White lists user
       //TODO Change to proper whitelist config
       if (id) {
-        await whitelist(id, ign);
+        await whitelist(ign, config.pterodactyl);
       }
 
       // Gives user the appropriate member role
@@ -110,7 +111,7 @@ export default {
       await member?.roles.remove(`${config.interviews.interview_role}`);
 
       if (msgInt.guild!.id && userId) {
-        const link = await checkLink(msgInt.guild!.id, mojangId);
+        const link = checkLink(mojangId);
         if (link) {
           return await msgInt.reply(
             "Link Already Exists, User has Been accepted"
@@ -118,7 +119,7 @@ export default {
         }
 
         //  Create link with users mojang id and discord id
-        await createLink(msgInt.guild!.id, mojangId, userId);
+        createLink(mojangId, userId);
 
         const member = guild?.members.cache.get(userId);
 

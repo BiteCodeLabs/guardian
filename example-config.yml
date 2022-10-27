@@ -3,8 +3,8 @@
 bot:
   owner: your-id
   # Input your User-ID here
-  test_server: server-id
-  # Used if you are making your own edits to the bot
+  server: server-id
+  # Thee server that the bot is running in
 
   token: token-id
   # Discord Bot Token

@@ -4,7 +4,6 @@ import path from "path";
 import YAML from "js-yaml";
 import WOKCommands from "wokcommands";
 import schedule from "node-schedule";
-
 import { initDB } from "./db";
 import { Config } from "./types";
 import { inactive } from "./modules/plan";
@@ -19,9 +18,6 @@ if (!config) {
   logger.error("No config file detected");
   process.exit(1);
 }
-
-initDB();
-
 // Import bot intents needed
 
 export const client = new Client({

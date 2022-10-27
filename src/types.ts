@@ -19,11 +19,12 @@ export type Config = {
 
 export type Bot = {
   owner: string;
-  test_server: string;
+  server: string;
   token: string;
   status: string;
   prefix: string;
   console_channel: string;
+  join_channel: string;
 };
 
 export type Applications = {
@@ -34,7 +35,7 @@ export type Applications = {
   welcome_channel: string;
   welcome_message: string;
   applications_channel: string;
-  questions: Question[];
+  questions: string[];
 };
 
 export type Interviews = {
@@ -76,10 +77,6 @@ export type Inactivity = {
   message: string;
 };
 
-export type Question = {
-  questions: string;
-};
-
 // Key value pair for submitted applications
 export type Application = {
   [key: string]: string;
@@ -98,7 +95,7 @@ export type Link = {
 
 export type Response = {
   number: number;
-  question: Question;
+  question: string;
   content: string;
 };
 

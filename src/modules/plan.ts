@@ -55,14 +55,14 @@ export async function inactive(guild: Guild, client: Client) {
           (role) => role.id === config.plan.inactivity.vaction_role
         )
       ) {
-        if (getPlanUser(user.mojang_id) !== null) return;
+        if (getPlanUser(user.mojang_id, config.plan.database) !== null) return;
 
         console.send(`Removing ${member} from server`);
         logger.info(`Removing ${member.displayName} from server`);
 
         await member.send(config.plan.inactivity.message);
         await guild.members.kick(member);
-        await unwhitelist(user.mojang_id);
+        await unwhitelist(user.mojang_id, config.pterodactyl);
         removeLink(user.mojang_id, user.discord_id);
       }
     }

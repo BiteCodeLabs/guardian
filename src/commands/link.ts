@@ -1,6 +1,8 @@
 import { MessageEmbed } from "discord.js";
+import { config } from "..";
 import { ICommand } from "wokcommands";
 import { checkLink, createLink } from "../db";
+import { logger } from "../modules/logger";
 import { getId } from "../modules/mojang";
 import { whitelist } from "../modules/ptero";
 import { MinecraftUser } from "../types";
@@ -42,7 +44,12 @@ export default {
 
     userId = userId.replace(/[<@!>]/g, "");
 
-    const mojangId: MinecraftUser = await getId(ign);
+    const mojangId = (await getId(ign)) as unknown as MinecraftUser;
+
+    if (!mojangId) {
+      logger.error("Invalid Minecraft IGN check");
+      return "An error occured while trying to link user please check if the ign you provided is valid";
+    }
 
     if (msgInt.guild!.id && userId) {
       try {
@@ -70,7 +77,7 @@ export default {
           .setTimestamp();
 
         await msgInt.reply({ embeds: [embed] });
-        whitelist(ign);
+        whitelist(ign, config.pterodactyl);
       } catch (error) {
         console.log(error);
       }
