@@ -7,8 +7,9 @@ import {
   TextChannel,
 } from "discord.js";
 import { logger } from "../logger";
-import { Response } from "../../types";
+import { LinkData, Response } from "../../types";
 import { client, config } from "../..";
+import { interactionStore, storeApplication } from "../../db";
 
 export async function postApplication(
   response: Response[],
@@ -75,10 +76,13 @@ export async function postApplication(
       );
     }
 
-    applicationChannel.send({
+    const message = await applicationChannel.send({
       embeds: [embed],
       components: [row],
     });
+
+    await interactionStore.set(message.id, member.id);
+    // storeApplication(message.id, member.id);
   } catch (error) {
     logger.error(
       `Error while submitting user application ${response}: \n`,

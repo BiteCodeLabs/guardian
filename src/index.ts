@@ -4,17 +4,14 @@ import path from "path";
 import YAML from "js-yaml";
 import WOKCommands from "wokcommands";
 import schedule from "node-schedule";
-import { initDB } from "./db";
 import { Config } from "./types";
-import { inactive } from "./modules/plan";
+// import { inactive } from "./modules/plan";
 import { logger } from "./modules/logger";
 import { Client, Intents } from "discord.js";
 
 export const config = YAML.load(
   fs.readFileSync("config/config.yml", "utf-8")
 ) as Config;
-
-initDB();
 
 if (!config) {
   logger.error("No config file detected");
@@ -39,7 +36,7 @@ client.on("ready", async () => {
 
   if (config.plan.inactivity.enabled) {
     schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
-      await inactive(botGuild, client);
+      // await inactive(botGuild, client);
     });
   }
 

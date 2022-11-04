@@ -87,8 +87,7 @@ export type MinecraftUser = {
   id: string;
 };
 
-export type Link = {
-  mojang_id: string;
+export type LinkData = {
   discord_id: string;
   grace_period: number;
 };

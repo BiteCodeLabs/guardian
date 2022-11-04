@@ -1,5 +1,6 @@
-import { Client } from "discord.js";
+import { Client, MessageEmbed } from "discord.js";
 import { config } from "..";
+import { getApplication, interactionStore } from "../db";
 import { acceptMember } from "../modules/applications/accept";
 import { sendQuestions } from "../modules/applications/questions";
 import { logger } from "../modules/logger";
@@ -12,7 +13,7 @@ export default (client: Client) => {
     if (!interaction.isButton()) return;
 
     if (interaction.customId === "apply") {
-      logger.info(`${interaction.member} has used `);
+      logger.info(`${interaction.member} has used the apply button`);
 
       const member = interaction.guild?.members.cache.get(interaction.user.id);
       sendQuestions(member!);
@@ -22,13 +23,47 @@ export default (client: Client) => {
       try {
         logger.info(`Accepted Member`);
 
-        const member = interaction.guild?.members.cache.get(
-          interaction.user.id
-        );
+        const messageId = interaction.message.id;
 
-        acceptMember(member!, config);
+        const data = await interactionStore.get(messageId);
+
+        if (!data) {
+          logger.error(
+            "There was an error getting application data for ",
+            messageId
+          );
+          return interaction.reply(
+            "There was an error getting application data for "
+          );
+        }
+
+        const applicationData = eval(data);
+
+        console.log(applicationData);
+        const member = interaction.guild?.members.cache.get(applicationData);
+
+        console.log("");
+        if (!member) {
+          logger.error(
+            "There was an error getting application data for ",
+            messageId
+          );
+          return interaction.reply(
+            "There was an error getting application data for "
+          );
+        }
+
+        console.log("Member: ", member);
+
+        acceptMember(member, config);
+
+        const embed = new MessageEmbed().setColor("GREEN");
+        interaction.reply({
+          embeds: [embed],
+        });
       } catch (error) {
         logger.error("Error trying to accept user");
+        return interaction.reply("There was an error trying to accept user");
       }
     }
 

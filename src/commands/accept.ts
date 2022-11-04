@@ -120,7 +120,7 @@ export default {
 
       if (msgInt.guild!.id && userId) {
         const link = checkLink(mojangId);
-        if (link) {
+        if (await link) {
           return await msgInt.reply(
             "Link Already Exists, User has Been accepted"
           );

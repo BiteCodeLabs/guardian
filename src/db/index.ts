@@ -1,90 +1,71 @@
 import mysql from "mysql2";
-import sqlite from "sqlite3";
-import { ApplicationCache, Database, Link } from "../types";
+import Keyv from "@keyvhq/core";
+import KeyvRedis from "@keyvhq/redis";
 import { logger } from "../modules/logger";
+import { Database, LinkData } from "../types";
 
-// SQLITE
+export const linkStore = new Keyv({
+  store: new KeyvRedis("redis://localhost:6379"),
+  namespace: "links",
+});
 
-// Creates a database and then execute create table query
-const db = new sqlite.Database("db.sqlite");
+export const interactionStore = new Keyv({
+  store: new KeyvRedis("redis://localhost:6379"),
+  namespace: "links",
+});
 
-export function initDB() {
-  db.exec(
-    "CREATE TABLE IF NOT EXISTS applications_cache (message_id VARCHAR(18) PRIMARY KEY,member_id VARCHAR(18))"
+linkStore.on("error", (err) => {
+  logger.error(
+    "Connection Error while trying to connect to links redis store",
+    err
   );
+  process.exit(1);
+});
 
-  db.exec(
-    "CREATE TABLE IF NOT EXISTS links (mojang_id VARCHAR(36) PRIMARY KEY, discord_id VARCHAR(18), grace_period INTEGER)"
+interactionStore.on("error", (err) => {
+  logger.error(
+    "Connection Error while trying to connect to interactions redis store",
+    err
   );
-}
+  process.exit(1);
+});
 
 // Checks the link of a given user
-export function checkLink(mojangId: string) {
-  try {
-    const query = db
-      .prepare("SELECT * FROM links WHERE mojang_id=?")
-      .get(mojangId);
-    return query as unknown as Link;
-  } catch (error) {
-    logger.error("Error trying to get link: ", error);
-  }
+export async function checkLink(mojangId: string) {
+  return await linkStore.get(mojangId);
 }
 
 // Gets all the links from the DB
-export function getLinks() {
-  try {
-    const query = db.prepare("SELECT * FROM links");
-    return query as unknown as Link[];
-  } catch (error) {
-    logger.error("Error trying to get link: ", error);
-  }
+export async function getLinks() {
+  return linkStore.iterator();
 }
 
 // Adds a link to the sqlite database
-export function createLink(mojang_id: string, discord_id: string) {
+export async function createLink(mojangId: string, discordId: string) {
   const grace = Date.now() + 604800000;
-  // This is done to protect against sql injections see https://github.com/TryGhost/node-sqlite3/issues/57
-  try {
-    const data = db.prepare(
-      "INSERT INTO links VALUES(mojang_id=?, discord_id=?,grace_period=?)",
-      mojang_id,
-      discord_id,
-      grace
-    );
-    logger.info(`Added ${data} to links database`);
-  } catch (error) {
-    logger.error("Error trying to add link to database", error);
-  }
-}
 
+  const link: LinkData = {
+    discord_id: discordId,
+    grace_period: grace,
+  };
+
+  const data = JSON.stringify(link);
+
+  await linkStore.set(mojangId, data);
+  logger.info(`Added ${mojangId}, ${data} to store`);
+}
 // Removes link from the table
-export function removeLink(mojang_id: string, discord_id: string) {
-  // This is done to protect against sql injections see https://github.com/TryGhost/node-sqlite3/issues/57
-  try {
-    const data = db.prepare(
-      "DELETE FROM links WHERE mojang_id=? AND discord_id=?",
-      mojang_id,
-      discord_id
-    );
-    logger.info(`Removed ${data} from links database`);
-  } catch (error) {
-    logger.error("Error trying to remove link from database: ", error);
-  }
+export async function removeLink(mojang_id: string) {
+  logger.info("Removing link: ", mojang_id);
+  return await linkStore.delete(mojang_id);
 }
 
-export function getApplication(message_id: string) {
-  try {
-    const data = db
-      .prepare("SELECT * FROM application_cache WHERE message_id=?")
-      .get(message_id);
+export function storeApplication(messageId: string, memberId: string) {
+  logger.info(`Added ${messageId}, ${memberId} to store`);
+}
 
-    return data as unknown as ApplicationCache;
-  } catch (error) {
-    logger.error(
-      "Error trying to get applicaiton cache from database: ",
-      error
-    );
-  }
+export async function getApplication(messageId: string) {
+  return await linkStore.get(messageId);
 }
 
 // Gets Plan user from database

@@ -54,7 +54,7 @@ export default {
     if (msgInt.guild!.id && userId) {
       try {
         const link = checkLink(mojangId.id);
-        if (link) {
+        if (await link) {
           return await msgInt.reply("Link Already Exists");
         }
 

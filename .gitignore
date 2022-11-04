@@ -112,3 +112,5 @@ config/
 config.yml
 
 db.sqlite
+
+cache/
