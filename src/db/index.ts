@@ -1,9 +1,8 @@
 import Keyv from "keyv";
-import mysql from "mysql2";
 import { logger } from "../modules/logger";
 import tables from "@databases/mysql-typed";
-import { Database, LinkData } from "../types";
-import createConnection, { sql } from "@databases/mysql";
+import { LinkData } from "../types";
+import createConnection from "@databases/mysql";
 import DatabaseSchema, { serializeValue } from "../__generated__";
 import { config } from "..";
 
