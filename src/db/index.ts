@@ -1,17 +1,20 @@
 import mysql from "mysql2";
-import Keyv from "@keyvhq/core";
-import KeyvRedis from "@keyvhq/redis";
+import Keyv from "keyv";
 import { logger } from "../modules/logger";
 import { Database, LinkData } from "../types";
 
-export const linkStore = new Keyv({
-  store: new KeyvRedis("redis://localhost:6379"),
-  namespace: "links",
+export const linkStore = new Keyv("sqlite://database.sqlite", {
+  table: "link_store",
+  busyTimeout: 10000,
+  serialize: JSON.stringify,
+  deserialize: JSON.parse,
 });
 
-export const interactionStore = new Keyv({
-  store: new KeyvRedis("redis://localhost:6379"),
-  namespace: "links",
+export const interactionStore = new Keyv("sqlite://database.sqlite", {
+  table: "interaction_store",
+  busyTimeout: 10000,
+  serialize: JSON.stringify,
+  deserialize: JSON.parse,
 });
 
 linkStore.on("error", (err) => {
@@ -32,7 +35,8 @@ interactionStore.on("error", (err) => {
 
 // Checks the link of a given user
 export async function checkLink(mojangId: string) {
-  return await linkStore.get(mojangId);
+  const data = await linkStore.get(mojangId);
+  return data as LinkData;
 }
 
 // Gets all the links from the DB
@@ -44,53 +48,48 @@ export async function getLinks() {
 export async function createLink(mojangId: string, discordId: string) {
   const grace = Date.now() + 604800000;
 
-  const link: LinkData = {
+  const link = {
     discord_id: discordId,
     grace_period: grace,
   };
 
-  const data = JSON.stringify(link);
-
-  await linkStore.set(mojangId, data);
-  logger.info(`Added ${mojangId}, ${data} to store`);
+  await linkStore.set(mojangId, link);
+  logger.info(`Added ${mojangId}, ${link} to store`);
 }
 // Removes link from the table
 export async function removeLink(mojang_id: string) {
   logger.info("Removing link: ", mojang_id);
-  return await linkStore.delete(mojang_id);
+  await linkStore.delete(mojang_id);
 }
 
-export function storeApplication(messageId: string, memberId: string) {
+export async function storeApplication(messageId: string, memberId: string) {
+  await interactionStore.set(messageId, memberId);
   logger.info(`Added ${messageId}, ${memberId} to store`);
 }
 
-export async function getApplication(messageId: string) {
-  return await linkStore.get(messageId);
-}
+// // Gets Plan user from database
+// export function getPlanUser(mojangId: string, database: Database) {
+//   //  MYSQL
 
-// Gets Plan user from database
-export function getPlanUser(mojangId: string, database: Database) {
-  //  MYSQL
+//   const connection = mysql.createConnection({
+//     user: database.user,
+//     password: database.password,
+//     host: database.host,
+//     database: database.database,
+//   });
 
-  const connection = mysql.createConnection({
-    user: database.user,
-    password: database.password,
-    host: database.host,
-    database: database.database,
-  });
-
-  connection.query(
-    "SELECT uuid FROM plan_users WHERE uuid=?",
-    [mojangId],
-    (err, rows) => {
-      if (err) {
-        logger.error(
-          "An error occured while trying to fetch plan users: ",
-          err
-        );
-        return;
-      }
-      return rows;
-    }
-  );
-}
+//   connection.query(
+//     "SELECT uuid FROM plan_users WHERE uuid=?",
+//     [mojangId],
+//     (err, rows) => {
+//       if (err) {
+//         logger.error(
+//           "An error occured while trying to fetch plan users: ",
+//           err
+//         );
+//         return;
+//       }
+//       return rows;
+//     }
+//   );
+// }

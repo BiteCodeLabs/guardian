@@ -1,15 +1,14 @@
 import {
   GuildMember,
-  Message,
   MessageActionRow,
   MessageButton,
   MessageEmbed,
   TextChannel,
 } from "discord.js";
 import { logger } from "../logger";
-import { LinkData, Response } from "../../types";
+import { Response } from "../../types";
 import { client, config } from "../..";
-import { interactionStore, storeApplication } from "../../db";
+import { interactionStore } from "../../db";
 
 export async function postApplication(
   response: Response[],
@@ -57,7 +56,7 @@ export async function postApplication(
   var embed = new MessageEmbed()
     .setColor("YELLOW")
     .setAuthor(author)
-    .setTitle(`${member.user} has submitted an application`)
+    .setTitle(`${member.user.tag} has submitted an application`)
     .setThumbnail(
       member.displayAvatarURL({
         dynamic: true,

@@ -1,6 +1,6 @@
 import { Client, MessageEmbed } from "discord.js";
-import { config } from "..";
-import { getApplication, interactionStore } from "../db";
+import { config, getGuild } from "..";
+import { interactionStore } from "../db";
 import { acceptMember } from "../modules/applications/accept";
 import { sendQuestions } from "../modules/applications/questions";
 import { logger } from "../modules/logger";
@@ -16,7 +16,7 @@ export default (client: Client) => {
       logger.info(`${interaction.member} has used the apply button`);
 
       const member = interaction.guild?.members.cache.get(interaction.user.id);
-      sendQuestions(member!);
+      if (member) sendQuestions(member);
     }
 
     if (interaction.customId === "accept") {
@@ -25,7 +25,15 @@ export default (client: Client) => {
 
         const messageId = interaction.message.id;
 
-        const data = await interactionStore.get(messageId);
+        const data: string = await interactionStore.get(messageId);
+
+        const guild = await getGuild();
+
+        const msg = interaction.channel?.messages.cache.get(
+          interaction.message.id
+        );
+
+        const member = await guild.members.fetch(data);
 
         if (!data) {
           logger.error(
@@ -33,33 +41,27 @@ export default (client: Client) => {
             messageId
           );
           return interaction.reply(
-            "There was an error getting application data for "
+            `There was an error getting application data for ${messageId} `
           );
         }
 
-        const applicationData = eval(data);
-
-        console.log(applicationData);
-        const member = interaction.guild?.members.cache.get(applicationData);
-
-        console.log("");
         if (!member) {
           logger.error(
             "There was an error getting application data for ",
             messageId
           );
           return interaction.reply(
-            "There was an error getting application data for "
+            `There was an error getting application data for ${messageId} `
           );
         }
 
-        console.log("Member: ", member);
-
         acceptMember(member, config);
 
-        const embed = new MessageEmbed().setColor("GREEN");
-        interaction.reply({
-          embeds: [embed],
+        msg?.embeds.forEach((embed) => {
+          embed.setColor("GREEN");
+          embed.setTimestamp();
+          embed.setFooter(`User accepted by ${interaction.user.username}`);
+          msg.edit({ embeds: [embed], components: [] });
         });
       } catch (error) {
         logger.error("Error trying to accept user");

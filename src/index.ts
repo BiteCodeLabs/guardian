@@ -2,7 +2,8 @@
 import fs from "fs";
 import path from "path";
 import YAML from "js-yaml";
-import WOKCommands from "wokcommands";
+//TODO: Make own command handler could be fun
+import WOK from "wokcommands";
 import schedule from "node-schedule";
 import { Config } from "./types";
 // import { inactive } from "./modules/plan";
@@ -29,11 +30,12 @@ export const client = new Client({
   ],
 });
 
+export async function getGuild() {
+  return client.guilds.fetch(config.bot.server);
+}
 // Once the client has connected to discord this function will configure the WOK command handler
 
 client.on("ready", async () => {
-  const botGuild = await client.guilds.fetch(config.bot.server);
-
   if (config.plan.inactivity.enabled) {
     schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
       // await inactive(botGuild, client);
@@ -42,7 +44,7 @@ client.on("ready", async () => {
 
   client.user!.setActivity(config.bot.status, { type: "WATCHING" });
 
-  new WOKCommands(client, {
+  new WOK(client, {
     featureDir: path.join(__dirname, "events"),
     commandDir: path.join(__dirname, "commands"),
     testServers: [config.bot.server],
