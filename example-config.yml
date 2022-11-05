@@ -147,7 +147,7 @@ plan:
   inactivity:
     enabled: false
     # Enables kicking users once they are removed from plan player analytics
-
+    vaction_role: ""
     message: You have been removed for inactivity
     # Inactive message sent to user once removed
 
