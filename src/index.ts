@@ -36,7 +36,7 @@ export async function getGuild() {
 
 client.on("ready", async () => {
   if (config.plan.inactivity.enabled) {
-    schedule.scheduleJob({ hour: 16, minute: 6 }, async function () {
+    schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
       await inactive(await getGuild(), client);
     });
   }
