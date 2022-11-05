@@ -1,6 +1,5 @@
 import { config } from "..";
 import { logger } from "./logger";
-import { unwhitelist } from "./ptero";
 import { Client, Guild, TextChannel } from "discord.js";
 import { getPlanUser, linkStore, removeLink } from "../db";
 

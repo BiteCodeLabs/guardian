@@ -57,7 +57,7 @@ export default (client: Client) => {
 
 async function acceptUser(interaction: ButtonInteraction) {
   try {
-    const data = await interactionStore.get(interaction.message.id);
+    const data = await interactionStore.get(interaction!.message.id);
 
     const server = await guild;
 
@@ -81,8 +81,12 @@ async function acceptUser(interaction: ButtonInteraction) {
       // TODO Add Prompt for IGN
       member.roles.add(config.applications.member_role);
 
-      interaction.message.embeds;
-      const embed = interaction?.message.embeds[0];
+      msg?.embeds.forEach((embed: MessageEmbed) => {
+        embed.setColor("GREEN");
+        embed.setTimestamp();
+        embed.setFooter(`User accepted by ${interaction.user.username}`);
+        msg.edit({ embeds: [embed], components: [] });
+      });
     }
   } catch (error) {
     logger.error("Error trying to accept user ", error);
@@ -168,7 +172,7 @@ async function denyUser(interaction: ButtonInteraction) {
         .addFields({ name: "Reason", value: `${response}` })
         .setFooter(`You can reapply in ${config.applications.timeout} minutes`);
 
-      const memberMessage = await member.send({
+      await member.send({
         embeds: [reasonEmbed],
       });
     });
@@ -254,7 +258,7 @@ async function banUser(interaction: ButtonInteraction) {
         .setColor("RED")
         .addFields({ name: "Reason", value: `${response}` });
 
-      const memberMessage = await member.send({
+      await member.send({
         embeds: [reasonEmbed],
       });
       await member.ban({
