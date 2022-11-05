@@ -114,3 +114,5 @@ config.yml
 db.sqlite
 
 cache/
+
+__generated__/

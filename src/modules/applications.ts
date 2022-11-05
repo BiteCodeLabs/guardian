@@ -8,7 +8,7 @@ import {
 import { logger } from "./logger";
 import { Response } from "../types";
 import { client, config } from "..";
-import { interactionStore, storeApplication } from "../db";
+import { storeApplication } from "../db";
 
 export async function postApplication(
   response: Response[],

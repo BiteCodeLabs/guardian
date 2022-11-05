@@ -1,51 +1,32 @@
-// import { AnyChannel, Client, TextChannel } from "discord.js";
-// import { getConfiguration, prisma, removeLink } from "../db";
-// import { consoleMessage, getIGN, unwhitelist } from "../utils/misc";
+import { config } from "..";
+import { getIGN } from "../modules/mojang";
+import { checkLink, removeLink } from "../db";
+import { unwhitelist } from "../modules/ptero";
+import { Client, TextChannel } from "discord.js";
 
-// export default (client: Client) => {
-//   client.on("guildMemberRemove", async (member) => {
-//     try {
-//       let consoleChannel: TextChannel;
-//       const link = await prisma.link.findMany({
-//         where: {
-//           guild_id: member.guild.id,
-//           discord_id: member.id,
-//         },
-//       });
+export default (client: Client) => {
+  client.on("guildMemberRemove", async (member) => {
+    try {
+      const consoleChannel = (await member.guild.channels.fetch(
+        config.bot.console_channel
+      )) as TextChannel;
 
-//       const config = await getConfiguration(member.guild.id, 15);
+      const link = await checkLink(member.id);
 
-//       if (link.length === 0) return;
+      console.log(link);
 
-//       if (config?.value !== null) {
-//         consoleChannel = client.channels.cache.get(
-//           config!.value
-//         ) as TextChannel;
-//       } else {
-//         return;
-//       }
-
-//       link.forEach(
-//         async (element: {
-//           mojang_uuid: string;
-//           guild_id: string;
-//           discord_id: string;
-//         }) => {
-//           const ign = await getIGN(element.mojang_uuid);
-//           await consoleMessage(
-//             consoleChannel,
-//             `${member} has left the server removing ${ign} form servers`
-//           );
-//           await unwhitelist(element.guild_id, ign);
-//           await removeLink(
-//             element.guild_id,
-//             element.mojang_uuid,
-//             element.discord_id
-//           );
-//         }
-//       );
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   });
-// };
+      if (link) {
+        await removeLink(member.id);
+        const ign = await getIGN(link.mojangId);
+        console.log(ign);
+        if (!ign) return;
+        await unwhitelist(ign.name, config.pterodactyl);
+        consoleChannel.send(
+          `${member.displayName} has left the server, thier link has been removed`
+        );
+      } else consoleChannel.send("Link not found moving on");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};

@@ -1,13 +1,11 @@
-// Import modules needed for bot to run
 import fs from "fs";
 import path from "path";
 import YAML from "js-yaml";
-//TODO: Make own command handler could be fun
 import WOK from "wokcommands";
-import schedule from "node-schedule";
 import { Config } from "./types";
-// import { inactive } from "./modules/plan";
+import schedule from "node-schedule";
 import { logger } from "./modules/logger";
+import { inactive } from "./modules/plan";
 import { Client, Intents } from "discord.js";
 
 export const config = YAML.load(
@@ -38,8 +36,8 @@ export async function getGuild() {
 
 client.on("ready", async () => {
   if (config.plan.inactivity.enabled) {
-    schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
-      // await inactive(botGuild, client);
+    schedule.scheduleJob({ hour: 16, minute: 6 }, async function () {
+      await inactive(await getGuild(), client);
     });
   }
 

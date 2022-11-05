@@ -41,8 +41,6 @@ export default {
     const ign = args.shift()!;
     let user: User | undefined;
 
-    // Gets Mojang ID of the the user
-    // TODO: FIx mojang api wrapper with new library
     const mojangId = await getId(ign);
 
     if (!mojangId) return "Please check IGN and Try again";
@@ -119,15 +117,15 @@ export default {
       await member?.roles.remove(`${config.interviews.interview_role}`);
 
       if (msgInt.guild!.id && userId) {
-        const link = checkLink(mojangId);
-        if (await link) {
+        const link = await checkLink(userId);
+        if (link) {
           return await msgInt.reply(
             "Link Already Exists, User has Been accepted"
           );
         }
 
         //  Create link with users mojang id and discord id
-        createLink(mojangId, userId);
+        await createLink(userId, mojangId);
 
         const member = guild?.members.cache.get(userId);
 
@@ -145,7 +143,7 @@ export default {
           .setImage(`https://crafatar.com/renders/body/${mojangId}?scale=3`)
           .setTimestamp();
 
-        return await msgInt.reply({ embeds: [embed], ephemeral: true });
+        return await msgInt.reply({ embeds: [embed] });
       }
     } catch (error) {
       console.log(error);

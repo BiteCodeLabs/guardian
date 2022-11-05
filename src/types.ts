@@ -90,22 +90,12 @@ export type MinecraftUser = {
 };
 
 export type LinkData = {
-  discord_id: string;
-  grace_period: number;
+  mojangId: string;
+  gracePeriod: number;
 };
 
 export type Response = {
   number: number;
   question: string;
   content: string;
-};
-
-export type ApplicationCache = {
-  message_id: string;
-  member_id: string;
-};
-
-export type ApplicationState = {
-  member: GuildMember;
-  message: Message;
 };
