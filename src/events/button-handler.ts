@@ -8,7 +8,7 @@ import {
   MessageEmbed,
   TextChannel,
 } from "discord.js";
-import { config, getGuild } from "..";
+import { config, guild } from "..";
 import { interactionStore } from "../db";
 import { sendQuestions } from "../modules/questions";
 import { logger } from "../modules/logger";
@@ -59,11 +59,11 @@ async function acceptUser(interaction: ButtonInteraction) {
   try {
     const data = await interactionStore.get(interaction.message.id);
 
-    const guild = await getGuild();
+    const server = await guild;
 
-    const member = await guild.members.fetch(data);
+    const member = await server.members.fetch(data);
 
-    const channel = (await guild.channels.fetch(
+    const channel = (await server.channels.fetch(
       config.applications.applications_channel
     )) as TextChannel;
 
@@ -94,11 +94,11 @@ async function denyUser(interaction: ButtonInteraction) {
   try {
     const data = await interactionStore.get(interaction.message.id);
 
-    const guild = await getGuild();
+    const server = await guild;
 
-    const member = await guild.members.fetch(data);
+    const member = await server.members.fetch(data);
 
-    const channel = (await guild.channels.fetch(
+    const channel = (await server.channels.fetch(
       config.applications.applications_channel
     )) as TextChannel;
 
@@ -181,11 +181,11 @@ async function banUser(interaction: ButtonInteraction) {
   try {
     const data = await interactionStore.get(interaction.message.id);
 
-    const guild = await getGuild();
+    const server = await guild;
 
-    const member = await guild.members.fetch(data);
+    const member = await server.members.fetch(data);
 
-    const channel = (await guild.channels.fetch(
+    const channel = (await server.channels.fetch(
       config.applications.applications_channel
     )) as TextChannel;
 

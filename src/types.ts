@@ -1,4 +1,4 @@
-import { GuildMember, Message } from "discord.js";
+import { type } from "os";
 
 export interface setting {
   value?: String;

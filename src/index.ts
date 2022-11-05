@@ -28,16 +28,13 @@ export const client = new Client({
   ],
 });
 
-// TODO Append data to client for easy access
-export async function getGuild() {
-  return client.guilds.fetch(config.bot.server);
-}
+export const guild = client.guilds.fetch(config.bot.server);
 // Once the client has connected to discord this function will configure the WOK command handler
 
 client.on("ready", async () => {
   if (config.plan.inactivity.enabled) {
     schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
-      await inactive(await getGuild(), client);
+      await inactive(await guild, client);
     });
   }
 
