@@ -45,7 +45,7 @@ client.on("ready", async () => {
   new WOKCommands(client, {
     featureDir: path.join(__dirname, "events"),
     commandDir: path.join(__dirname, "commands"),
-    testServers: config.bot.server,
+    testServers: [config.bot.server],
     botOwners: [config.bot.owner],
     typeScript: false,
   }).setDefaultPrefix(config.bot.prefix);
