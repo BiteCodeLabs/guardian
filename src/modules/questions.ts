@@ -1,5 +1,5 @@
-import { config } from "../..";
-import { logger } from "../logger";
+import { config } from "..";
+import { logger } from "./logger";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { postApplication } from "./applications";
 

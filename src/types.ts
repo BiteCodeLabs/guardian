@@ -30,7 +30,7 @@ export type Bot = {
 export type Applications = {
   enabled: boolean;
   timeout: number;
-  member_role: number;
+  member_role: string;
   join_message: string;
   welcome_channel: string;
   welcome_message: string;

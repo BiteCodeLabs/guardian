@@ -1,4 +1,3 @@
-import { config } from "..";
 import ptero from "jspteroapi";
 import { logger } from "./logger";
 import { Pterodactyl } from "../types";

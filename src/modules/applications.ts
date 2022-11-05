@@ -5,10 +5,10 @@ import {
   MessageEmbed,
   TextChannel,
 } from "discord.js";
-import { logger } from "../logger";
-import { Response } from "../../types";
-import { client, config } from "../..";
-import { interactionStore } from "../../db";
+import { logger } from "./logger";
+import { Response } from "../types";
+import { client, config } from "..";
+import { interactionStore } from "../db";
 
 export async function postApplication(
   response: Response[],
