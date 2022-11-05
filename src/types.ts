@@ -1,3 +1,5 @@
+import { GuildMember, Message } from "discord.js";
+
 export interface setting {
   value?: String;
 }
@@ -101,4 +103,9 @@ export type Response = {
 export type ApplicationCache = {
   message_id: string;
   member_id: string;
+};
+
+export type ApplicationState = {
+  member: GuildMember;
+  message: Message;
 };

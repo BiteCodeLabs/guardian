@@ -8,7 +8,7 @@ import {
 import { logger } from "./logger";
 import { Response } from "../types";
 import { client, config } from "..";
-import { interactionStore } from "../db";
+import { interactionStore, storeApplication } from "../db";
 
 export async function postApplication(
   response: Response[],
@@ -80,7 +80,7 @@ export async function postApplication(
       components: [row],
     });
 
-    await interactionStore.set(message.id, member.id);
+    await storeApplication(message.id, member.id);
     // storeApplication(message.id, member.id);
   } catch (error) {
     logger.error(

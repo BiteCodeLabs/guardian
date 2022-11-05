@@ -30,6 +30,7 @@ export const client = new Client({
   ],
 });
 
+// TODO Append data to client for easy access
 export async function getGuild() {
   return client.guilds.fetch(config.bot.server);
 }

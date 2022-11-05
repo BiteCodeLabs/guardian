@@ -19,7 +19,7 @@ export const interactionStore = new Keyv("sqlite://database.sqlite", {
 
 linkStore.on("error", (err) => {
   logger.error(
-    "Connection Error while trying to connect to links redis store",
+    "Connection Error while trying to connect to links sqlite store",
     err
   );
   process.exit(1);
@@ -27,7 +27,7 @@ linkStore.on("error", (err) => {
 
 interactionStore.on("error", (err) => {
   logger.error(
-    "Connection Error while trying to connect to interactions redis store",
+    "Connection Error while trying to connect to interactions sqlite store",
     err
   );
   process.exit(1);
