@@ -5,7 +5,7 @@ import {
   MessageEmbed,
   TextChannel,
 } from "discord.js";
-import { logger } from "./logger";
+import logger from "./logger";
 import { Response } from "../types";
 import { client, config } from "..";
 import { storeApplication } from "../db";

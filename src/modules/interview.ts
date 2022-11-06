@@ -1,6 +1,6 @@
-import { GuildMember, TextChannel } from "discord.js";
+import logger from "./logger";
 import { client, config } from "..";
-import { logger } from "./logger";
+import { GuildMember, TextChannel } from "discord.js";
 
 const { interviews } = config;
 

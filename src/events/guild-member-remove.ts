@@ -1,4 +1,5 @@
 import { config } from "..";
+import logger from "../modules/logger";
 import { getIGN } from "../modules/mojang";
 import { checkLink, removeLink } from "../db";
 import { unwhitelist } from "../modules/ptero";
@@ -13,12 +14,9 @@ export default (client: Client) => {
 
       const link = await checkLink(member.id);
 
-      console.log(link);
-
       if (link) {
         await removeLink(member.id);
         const ign = await getIGN(link.mojangId);
-        console.log(ign);
         if (!ign) return;
         await unwhitelist(ign.name, config.pterodactyl);
         consoleChannel.send(
@@ -26,7 +24,7 @@ export default (client: Client) => {
         );
       } else consoleChannel.send("Link not found moving on");
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   });
 };

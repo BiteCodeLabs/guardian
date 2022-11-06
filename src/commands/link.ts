@@ -1,11 +1,11 @@
-import { MessageEmbed } from "discord.js";
 import { config } from "..";
+import logger from "../modules/logger";
 import { ICommand } from "wokcommands";
-import { checkLink, createLink } from "../db";
-import { logger } from "../modules/logger";
-import { getId } from "../modules/mojang";
-import { whitelist } from "../modules/ptero";
 import { MinecraftUser } from "../types";
+import { getId } from "../modules/mojang";
+import { MessageEmbed } from "discord.js";
+import { whitelist } from "../modules/ptero";
+import { checkLink, createLink } from "../db";
 
 // Create sub command to make it easier to add and remove links
 
@@ -87,7 +87,7 @@ export default {
 
         whitelist(ign, config.pterodactyl);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     }
   },

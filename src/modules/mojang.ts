@@ -1,6 +1,6 @@
 import axios from "axios";
+import logger from "./logger";
 import { MinecraftUser } from "../types";
-import { logger } from "./logger";
 
 // This queries the Mojang API for a users ID
 export async function getId(ign: string) {

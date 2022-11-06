@@ -1,5 +1,5 @@
+import logger from "./logger";
 import ptero from "jspteroapi";
-import { logger } from "./logger";
 import { Pterodactyl } from "../types";
 
 // Responsible for whitelisting users to specified servers

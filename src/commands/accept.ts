@@ -1,10 +1,10 @@
-import { ICommand } from "wokcommands";
-import { MessageEmbed, TextChannel, User } from "discord.js";
-import { checkLink, createLink } from "../db";
 import { config } from "..";
+import { ICommand } from "wokcommands";
+import logger from "../modules/logger";
 import { getId } from "../modules/mojang";
 import { whitelist } from "../modules/ptero";
-import { logger } from "../modules/logger";
+import { checkLink, createLink } from "../db";
+import { MessageEmbed, TextChannel, User } from "discord.js";
 
 export default {
   category: "Interviews",
@@ -146,7 +146,7 @@ export default {
         return await msgInt.reply({ embeds: [embed] });
       }
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return "An error has occured please try again";
     }
   },
