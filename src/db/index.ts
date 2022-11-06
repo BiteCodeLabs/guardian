@@ -1,10 +1,6 @@
 import Keyv from "keyv";
 import { logger } from "../modules/logger";
-import tables from "@databases/mysql-typed";
 import { LinkData } from "../types";
-import createConnection from "@databases/mysql";
-import DatabaseSchema, { serializeValue } from "../__generated__";
-import { config } from "..";
 
 export const linkStore = new Keyv("sqlite://database.sqlite", {
   table: "link_store",
@@ -19,6 +15,8 @@ export const interactionStore = new Keyv("sqlite://database.sqlite", {
   serialize: JSON.stringify,
   deserialize: JSON.parse,
 });
+
+export const timeoutCache = new Keyv();
 
 linkStore.on("error", (err: any) => {
   logger.error(
@@ -70,25 +68,4 @@ export async function removeLink(discordId: string) {
 export async function storeApplication(messageId: string, memberId: string) {
   await interactionStore.set(messageId, memberId);
   logger.info(`Added ${messageId}, ${memberId} to store`);
-}
-
-// // Gets Plan user from database
-
-export async function getPlanUser(uuid: string) {
-  try {
-    const db = createConnection(
-      `mysql://${config.plan.database.user}:${config.plan.database.password}@${config.plan.database.host}:${config.plan.database.port}/${config.plan.database.database}`
-    );
-
-    const { plan_users } = tables<DatabaseSchema>({
-      serializeValue,
-    });
-
-    const data = await plan_users(db).findOne({
-      uuid: uuid,
-    });
-    return data;
-  } catch (error) {
-    logger.error("Error trying to get plan user data", error);
-  }
 }

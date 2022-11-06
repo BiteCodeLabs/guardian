@@ -9,7 +9,7 @@ import {
   TextChannel,
 } from "discord.js";
 import { config, guild } from "..";
-import { interactionStore } from "../db";
+import { interactionStore, timeoutCache } from "../db";
 import { sendQuestions } from "../modules/questions";
 import { logger } from "../modules/logger";
 import { conductInterview } from "../modules/interview";
@@ -24,8 +24,25 @@ export default (client: Client) => {
     if (interaction.customId === "apply") {
       // TODO Add timeout
       logger.info(`${interaction.member} has used the apply button`);
-      const member = interaction.guild?.members.cache.get(interaction.user.id);
-      if (member) sendQuestions(member);
+
+      const checkTimeout = await timeoutCache.get(interaction.user.id);
+
+      if (!checkTimeout) {
+        const member = interaction.guild?.members.cache.get(
+          interaction.user.id
+        );
+        if (member) sendQuestions(member);
+        await timeoutCache.set(
+          interaction.user.id,
+          true,
+          config.applications.timeout * 60000
+        );
+      } else {
+        interaction.reply({
+          content: `Please wait for ${config.applications.timeout} minutes after your application to apply again thank you`,
+          ephemeral: true,
+        });
+      }
     }
 
     if (interaction.customId === "accept") {
