@@ -18,6 +18,9 @@ bot:
   console_channel: channel-id
   # Channel Id for channel to monitor bot actions / errors
 
+  join_channel: "911808584835289119"
+  # Channel to initialize applications
+
   # ---------------------------------------------------------------------
   # Ignore Settings
   # ----------------------------------------------------------------------
@@ -147,7 +150,8 @@ plan:
   inactivity:
     enabled: false
     # Enables kicking users once they are removed from plan player analytics
-    vaction_role: ""
+    vaction_role: "1038558126640746527"
+    # Role to stop users from getting kicked
     message: You have been removed for inactivity
     # Inactive message sent to user once removed
 
