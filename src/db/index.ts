@@ -35,32 +35,28 @@ interactionStore.on("error", (err: any) => {
 });
 
 // Checks the link of a given user
-export async function checkLink(discordId: string) {
-  const data = await linkStore.get(discordId);
+export async function checkLink(mojangId: string) {
+  const data = await linkStore.get(mojangId);
   return data as LinkData;
 }
 
-// Gets all the links from the DB
-export async function getLinks() {
-  return linkStore.iterator();
-}
-
 // Adds a link to the sqlite database
-export async function createLink(discordId: string, mojangId: string) {
+export async function createLink(mojangId: string, discordId: string) {
   const grace = Date.now() + 604800000;
 
   const link = {
-    mojangId: mojangId,
+    discordId: discordId,
     gracePeriod: grace,
+    mojangId: mojangId,
   };
 
-  await linkStore.set(discordId, link);
-  logger.info(`Added ${discordId}, ${link.mojangId} to store`);
+  await linkStore.set(mojangId, link);
+  logger.info(`Added ${mojangId}, ${link.discordId} to store`);
 }
 // Removes link from the table
-export async function removeLink(discordId: string) {
-  logger.info("Removing link: ", discordId);
-  await linkStore.delete(discordId);
+export async function removeLink(mojangId: string) {
+  logger.info("Removing link: ", mojangId);
+  await linkStore.delete(mojangId);
 }
 
 export async function storeApplication(messageId: string, memberId: string) {

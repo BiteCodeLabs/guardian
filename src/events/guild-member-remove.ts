@@ -1,7 +1,7 @@
 import { config } from "..";
 import logger from "../modules/logger";
 import { getIGN } from "../modules/mojang";
-import { checkLink, removeLink } from "../db";
+import { linkStore, removeLink } from "../db";
 import { unwhitelist } from "../modules/ptero";
 import { Client, TextChannel } from "discord.js";
 
@@ -12,17 +12,17 @@ export default (client: Client) => {
         config.bot.console_channel
       )) as TextChannel;
 
-      const link = await checkLink(member.id);
-
-      if (link) {
-        await removeLink(member.id);
-        const ign = await getIGN(link.mojangId);
-        if (!ign) return;
-        await unwhitelist(ign.name, config.pterodactyl);
-        consoleChannel.send(
-          `${member.displayName} has left the server, thier link has been removed`
-        );
-      } else consoleChannel.send("Link not found moving on");
+      for await (const [key, value] of linkStore.iterator()) {
+        if (value.discordId === member.id) {
+          await removeLink(key);
+          const ign = await getIGN(key);
+          if (!ign) return;
+          await unwhitelist(ign.name, config.pterodactyl);
+          consoleChannel.send(
+            `${member.displayName} has left the server, thier link has been removed`
+          );
+        }
+      }
     } catch (error) {
       logger.error(error);
     }
