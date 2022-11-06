@@ -1,23 +1,15 @@
 import { config } from "..";
 import { logger } from "./logger";
 import { Client, Guild, TextChannel } from "discord.js";
-import { getPlanUser, linkStore, removeLink } from "../db";
+import mysql from "mysql2";
+import { linkStore, removeLink } from "../db";
+import { MySQLData } from "../types";
 
-// export async function msToTime(ms: number) {
-//   let seconds: any = (ms / 1000).toFixed(1);
-//   let minutes: any = (ms / (1000 * 60)).toFixed(1);
-//   let hours: any = (ms / (1000 * 60 * 60)).toFixed(1);
-//   let days: any = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-//   if (seconds < 60) return seconds + " Sec";
-//   else if (minutes < 60) return minutes + " Min";
-//   else if (hours < 24) return hours + " Hrs";
-//   else return days + " Days";
-// }
 // Checks for user in Plan DB if it does not exist it removes them from the database
 export async function inactive(guild: Guild, client: Client) {
   try {
     logger.info("Checking for inactive users");
-    const console = client.channels.cache.get(
+    const consoleChannel = client.channels.cache.get(
       config.bot.console_channel
     ) as TextChannel;
 
@@ -44,18 +36,43 @@ export async function inactive(guild: Guild, client: Client) {
             role.id === config.plan.inactivity.vaction_role
         )
       ) {
-        await getPlanUser(value.mojangId);
-        console.send(`Removing ${member} from server`);
-        logger.info(`Removing ${member.displayName} from server`);
-        await member.send(config.plan.inactivity.message);
-        await guild.members.kick(member);
-        await removeLink(member.id);
+        try {
+          const db = mysql.createConnection({
+            host: config.plan.database.host,
+            user: config.plan.database.user,
+            database: config.plan.database.database,
+            password: config.plan.database.password,
+            port: parseInt(config.plan.database.port),
+            connectionLimit: 5,
+          });
 
-        if (!config.pterodactyl) {
-          logger.warn(
-            "Pterodactyl module has not been enabled or is missing from your config file"
+          db.query(
+            "SELECT * FROM `plan_users` WHERE `uuid` = ?",
+            [value.mojangId],
+            async function (err, rows) {
+              if (err) {
+                return console.log(err);
+              }
+              const data = rows as unknown as MySQLData[];
+              if (data.length === 0) {
+                consoleChannel.send(`Removing ${member} from server`);
+                console.log(`Removing ${member.displayName} from server`);
+                await member.send(config.plan.inactivity.message);
+                await guild.members.kick(member);
+                await removeLink(member.id);
+
+                if (!config.pterodactyl) {
+                  logger.warn(
+                    "Pterodactyl module has not been enabled or is missing from your config file"
+                  );
+                  return "Pterodactyl module has not been enabled or is missing from your config file";
+                }
+              }
+              return;
+            }
           );
-          return "Pterodactyl module has not been enabled or is missing from your config file";
+        } catch (error) {
+          console.error("Error trying to get plan user data", error);
         }
       }
     }

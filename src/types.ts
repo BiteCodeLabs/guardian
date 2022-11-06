@@ -97,3 +97,11 @@ export type Response = {
   question: string;
   content: string;
 };
+
+export type MySQLData = {
+  id: number;
+  uuid: string;
+  registered: number;
+  name: string;
+  times_kicked: number;
+};
