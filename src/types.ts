@@ -88,8 +88,9 @@ export type MinecraftUser = {
 };
 
 export type LinkData = {
-  mojangId: string;
+  discordId: string;
   gracePeriod: number;
+  mojangId: string;
 };
 
 export type Response = {

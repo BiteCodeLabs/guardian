@@ -123,7 +123,7 @@ export default {
       await member?.roles.remove(`${config.interviews.interview_role}`);
 
       if (msgInt.guild!.id && userId) {
-        const link = await checkLink(userId);
+        const link = await checkLink(mojangId);
         if (link) {
           return await msgInt.reply(
             "Link Already Exists, User has Been accepted"
@@ -131,7 +131,7 @@ export default {
         }
 
         //  Create link with users mojang id and discord id
-        await createLink(userId, mojangId);
+        await createLink(mojangId, userId);
 
         const member = guild?.members.cache.get(userId);
 

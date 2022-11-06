@@ -48,7 +48,7 @@ export async function inactive(guild: Guild, client: Client) {
 
           db.query(
             "SELECT * FROM `plan_users` WHERE `uuid` = ?",
-            [value.mojangId],
+            [key],
             async function (err, rows) {
               if (err) {
                 return logger.error(err);
@@ -59,7 +59,7 @@ export async function inactive(guild: Guild, client: Client) {
                 logger.error(`Removing ${member.displayName} from server`);
                 await member.send(config.plan.inactivity.message);
                 await guild.members.kick(member);
-                await removeLink(member.id);
+                await removeLink(key);
 
                 if (!config.pterodactyl) {
                   logger.warn(
