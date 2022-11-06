@@ -1,7 +1,7 @@
 import { config } from "..";
-import { logger } from "./logger";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import logger from "./logger";
 import { postApplication } from "./applications";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 
 // Change to Modal System
 export async function sendQuestions(member: GuildMember) {

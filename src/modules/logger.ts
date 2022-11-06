@@ -1,21 +1,30 @@
-import bunyan from "bunyan";
+import { format, createLogger, transports } from "winston";
 
-export const logger = bunyan.createLogger({
-  name: "guardian",
-  streams: [
-    {
-      level: "info",
-      stream: process.stdout, // log INFO and above to stdout
-    },
-    {
-      level: "warn",
-      stream: process.stdout, // log warn and above to stdout
-      path: "logs/warning.log", // log WARN and above to a file
-    },
-    {
+const { combine, timestamp, label, printf } = format;
+const CATEGORY = "Guardian";
+
+const customFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`;
+});
+const logger = createLogger({
+  level: "debug",
+  format: combine(
+    label({ label: CATEGORY }),
+    timestamp({
+      format: "MMM-DD-YYYY HH:mm:ss",
+    }),
+    customFormat
+  ),
+  transports: [
+    new transports.File({
+      filename: "logs/info.log",
+    }),
+    new transports.File({
       level: "error",
-      stream: process.stdout, // log error and above to stdout
-      path: "logs/error.log", // log ERROR and above to a file
-    },
+      filename: "logs/error.log",
+    }),
+    new transports.Console(),
   ],
 });
+
+export default logger;

@@ -4,9 +4,9 @@ import {
   MessageEmbed,
   TextChannel,
 } from "discord.js";
-import { ICommand } from "wokcommands";
 import { config } from "..";
-import { logger } from "../modules/logger";
+import logger from "../modules/logger";
+import { ICommand } from "wokcommands";
 
 export default {
   category: "Applications",

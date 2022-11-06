@@ -4,7 +4,7 @@ import YAML from "js-yaml";
 import WOK from "wokcommands";
 import { Config } from "./types";
 import schedule from "node-schedule";
-import { logger } from "./modules/logger";
+import logger from "./modules/logger";
 import { inactive } from "./modules/plan";
 import { Client, Intents } from "discord.js";
 
@@ -51,4 +51,4 @@ client.on("ready", async () => {
 
 //Connects the client to discord
 
-client.login(config.bot.token).then((r) => console.log("Guardian Is Alive"));
+client.login(config.bot.token).then((r) => logger.info("Guardian Is Alive"));

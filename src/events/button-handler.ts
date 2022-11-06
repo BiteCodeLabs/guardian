@@ -9,9 +9,9 @@ import {
   TextChannel,
 } from "discord.js";
 import { config, guild } from "..";
-import { interactionStore, timeoutCache } from "../db";
+import logger from "../modules/logger";
 import { sendQuestions } from "../modules/questions";
-import { logger } from "../modules/logger";
+import { interactionStore, timeoutCache } from "../db";
 import { conductInterview } from "../modules/interview";
 
 // Change to Modals for Deny and ban interactions

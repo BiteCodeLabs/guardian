@@ -1,6 +1,6 @@
 import Keyv from "keyv";
-import { logger } from "../modules/logger";
 import { LinkData } from "../types";
+import logger from "../modules/logger";
 
 export const linkStore = new Keyv("sqlite://database.sqlite", {
   table: "link_store",
@@ -56,8 +56,6 @@ export async function createLink(discordId: string, mojangId: string) {
 
   await linkStore.set(discordId, link);
   logger.info(`Added ${discordId}, ${link.mojangId} to store`);
-
-  console.log(await linkStore.get(discordId));
 }
 // Removes link from the table
 export async function removeLink(discordId: string) {

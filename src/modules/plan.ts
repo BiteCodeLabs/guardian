@@ -1,9 +1,9 @@
-import { config } from "..";
-import { logger } from "./logger";
-import { Client, Guild, TextChannel } from "discord.js";
 import mysql from "mysql2";
-import { linkStore, removeLink } from "../db";
+import { config } from "..";
+import logger from "./logger";
 import { MySQLData } from "../types";
+import { linkStore, removeLink } from "../db";
+import { Client, Guild, TextChannel } from "discord.js";
 
 // Checks for user in Plan DB if it does not exist it removes them from the database
 export async function inactive(guild: Guild, client: Client) {
@@ -51,12 +51,12 @@ export async function inactive(guild: Guild, client: Client) {
             [value.mojangId],
             async function (err, rows) {
               if (err) {
-                return console.log(err);
+                return logger.error(err);
               }
               const data = rows as unknown as MySQLData[];
               if (data.length === 0) {
                 consoleChannel.send(`Removing ${member} from server`);
-                console.log(`Removing ${member.displayName} from server`);
+                logger.error(`Removing ${member.displayName} from server`);
                 await member.send(config.plan.inactivity.message);
                 await guild.members.kick(member);
                 await removeLink(member.id);
