@@ -44,7 +44,9 @@ export default {
 
     userId = userId.replace(/[<@!>]/g, "");
 
-    const mojangId = (await getId(ign)) as unknown as MinecraftUser;
+    console.log(ign);
+    const mojangId = await getId(ign);
+    console.log(mojangId);
 
     if (!mojangId) {
       logger.error("Invalid Minecraft IGN check");
@@ -53,12 +55,12 @@ export default {
 
     if (msgInt.guild!.id && userId) {
       try {
-        const link = checkLink(mojangId.id);
+        const link = checkLink(mojangId);
         if (await link) {
           return await msgInt.reply("Link Already Exists");
         }
 
-        createLink(mojangId.id, userId);
+        await createLink(mojangId, userId);
 
         const member = guild?.members.cache.get(userId);
 

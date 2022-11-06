@@ -10,9 +10,12 @@ export async function getId(ign: string) {
       `https://api.mojang.com/users/profiles/minecraft/${ign}`
     );
 
-    return addDashes(response.id);
+    console.log(response.id);
+    const data = addDashes(response.id);
+    console.log(data);
+    return data;
   } catch (error) {
-    logger.error("Error trying to get mojang user id");
+    logger.error("Error trying to get mojang user id", error);
   }
 }
 
@@ -34,5 +37,6 @@ function addDashes(id: string) {
   const regex =
     /([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)/g;
   const subst = "$1-$2-$3-$4-$5";
-  return id.replace(regex, subst);
+  const newId = id.replace(regex, subst);
+  return newId;
 }
