@@ -109,10 +109,16 @@ export default {
       await member?.roles.add(`${config.interviews.member_role}`);
 
       // Sends welcome message
-      // TODO Add the ability to ping user and add welcome message
-      await (channel as TextChannel).send(
-        `Welcome to the server ${user}.\nIP is pinned under <#849090123038720041>`
-      );
+
+      const regex = /&<member>/;
+
+      if (regex.test(config.interviews.welcome_message)) {
+        await (channel as TextChannel).send(
+          config.interviews.welcome_message.replace(regex, `${user}`)
+        );
+      } else {
+        await (channel as TextChannel).send(config.interviews.welcome_message);
+      }
 
       await member?.roles.remove(`${config.interviews.interview_role}`);
 

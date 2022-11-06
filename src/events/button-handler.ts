@@ -84,6 +84,10 @@ async function acceptUser(interaction: ButtonInteraction) {
       config.applications.applications_channel
     )) as TextChannel;
 
+    const welcomeChannel = await server.channels.fetch(
+      config.applications.welcome_channel
+    );
+
     const msg = await channel.messages.fetch(interaction.message.id);
 
     if (config.interviews.enabled) {
@@ -97,6 +101,19 @@ async function acceptUser(interaction: ButtonInteraction) {
     } else {
       // TODO Add Prompt for IGN
       member.roles.add(config.applications.member_role);
+      // Sends welcome message
+
+      const regex = /&<member>/;
+
+      if (regex.test(config.applications.welcome_message)) {
+        await (welcomeChannel as TextChannel).send(
+          config.applications.welcome_message.replace(regex, `${member}`)
+        );
+      } else {
+        await (welcomeChannel as TextChannel).send(
+          config.applications.welcome_message
+        );
+      }
 
       msg?.embeds.forEach((embed: MessageEmbed) => {
         embed.setColor("GREEN");
