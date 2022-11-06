@@ -3,6 +3,8 @@ import { ICommand } from "wokcommands";
 import { getId } from "../modules/mojang";
 import { MessageEmbed } from "discord.js";
 import { linkStore } from "../db";
+import { unwhitelist } from "../modules/ptero";
+import { config } from "..";
 
 // Create sub command to make it easier to add and remove links
 
@@ -69,6 +71,7 @@ export default {
           .setTimestamp();
 
         await msgInt.reply({ embeds: [embed] });
+        await unwhitelist(ign, config.pterodactyl);
       } catch (error) {
         logger.error("Oh nowo", error);
       }
