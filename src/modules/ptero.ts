@@ -11,7 +11,7 @@ export async function whitelist(ign: string, pteroConfig: Pterodactyl) {
     try {
       await panelClient.sendCommand(server, `whitelist add ${ign}`);
     } catch (error) {
-      logger.error(error);
+      logger.error("An error occured while trying to whitelist ", ign, error);
     }
   }
 }
@@ -24,7 +24,7 @@ export async function unwhitelist(ign: string, pteroConfig: Pterodactyl) {
     try {
       await panelClient.sendCommand(server, `whitelist remove ${ign}`);
     } catch (error) {
-      logger.error(error);
+      logger.error("An error occured while trying to unwhitelist ", ign, error);
     }
   }
 }

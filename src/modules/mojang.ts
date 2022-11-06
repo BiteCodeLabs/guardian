@@ -10,9 +10,7 @@ export async function getId(ign: string) {
       `https://api.mojang.com/users/profiles/minecraft/${ign}`
     );
 
-    console.log(response.id);
     const data = addDashes(response.id);
-    console.log(data);
     return data;
   } catch (error) {
     logger.error("Error trying to get mojang user id", error);

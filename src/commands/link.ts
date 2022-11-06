@@ -44,9 +44,7 @@ export default {
 
     userId = userId.replace(/[<@!>]/g, "");
 
-    console.log(ign);
     const mojangId = await getId(ign);
-    console.log(mojangId);
 
     if (!mojangId) {
       logger.error("Invalid Minecraft IGN check");
@@ -87,9 +85,9 @@ export default {
           return "Pterodactyl module has not been enabled or is missing from your config file";
         }
 
-        whitelist(ign, config.pterodactyl);
+        await whitelist(ign, config.pterodactyl);
       } catch (error) {
-        logger.error(error);
+        logger.error("Oh nowo", error);
       }
     }
   },
