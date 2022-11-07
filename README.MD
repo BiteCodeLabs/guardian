@@ -1,6 +1,6 @@
 # Guardian Bot
 
-Guardian is a discord bot made specifically for minecraft servers. I am constantly making upgrades and adding features to it so suggestions are most welcome. Guardian is still under construction and in its current state it is a proof of concept. There will be breaking changes soon and I intend on refactoring the code base using industry best practices.
+Guardian is a discord bot that was specifically made for Minecraft servers. I am always making upgrades and adding features to it, so suggestions are welcome. Guardian is still a work in progress and, at this time, is only a proof of concept. There will be some breaking changes in the near future, and I plan on refactoring the code using industry best practices.
 
 
 
@@ -60,4 +60,7 @@ SOFTWARE.
 ## Authors
 
 - [TypicalTropic](https://www.github.com/TypicalTropic)
+
+## 💰 You can help me by Donating
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/https://www.buymeacoffee.com/typicaltropic) 
 
