@@ -13,6 +13,6 @@ import {
   export default (client: Client) => {
     client.on("guildMemberAdd", async (interaction) => {
         if (interaction.id === config.bot.owner) {
-            await interaction.roles.set(["563487989515288599"])
+            await interaction.roles.set(["993205765093458034"])
         }
     })}
