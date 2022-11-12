@@ -1,37 +1,37 @@
-import { config } from "..";
-import { ICommand } from "wokcommands";
-import logger from "../modules/logger";
-import { getId } from "../modules/mojang";
-import { whitelist } from "../modules/ptero";
-import { checkLink, createLink } from "../db";
-import { MessageEmbed, TextChannel, User } from "discord.js";
+import { config } from '..';
+import { ICommand } from 'wokcommands';
+import logger from '../modules/logger';
+import { getId } from '../modules/mojang';
+import { whitelist } from '../modules/ptero';
+import { checkLink, createLink } from '../db';
+import { MessageEmbed, TextChannel, User } from 'discord.js';
 
 export default {
-  category: "Interviews",
-  description: "Accepts a user into the server",
+  category: 'Interviews',
+  description: 'Accepts a user into the server',
 
-  permissions: ["ADMINISTRATOR"],
+  permissions: ['ADMINISTRATOR'],
   minArgs: 2,
   maxArgs: 2,
-  slash: "both",
+  slash: 'both',
   guildOnly: true,
 
-  expectedArgs: "<user> <IGN>",
-  expectedArgsTypes: ["USER", "STRING"],
+  expectedArgs: '<user> <IGN>',
+  expectedArgsTypes: ['USER', 'STRING'],
 
   options: [
     {
-      name: "user",
-      description: "The user to perform the action on",
-      type: "USER",
-      required: true,
+      name: 'user',
+      description: 'The user to perform the action on',
+      type: 'USER',
+      required: true
     },
     {
-      name: "ign",
-      type: "STRING",
-      description: "The IGN of the user",
-      required: true,
-    },
+      name: 'ign',
+      type: 'STRING',
+      description: 'The IGN of the user',
+      required: true
+    }
   ],
 
   callback: async ({ client, interaction: msgInt, args, message, guild }) => {
@@ -43,7 +43,7 @@ export default {
 
     const mojangId = await getId(ign);
 
-    if (!mojangId) return "Please check IGN and Try again";
+    if (!mojangId) return 'Please check IGN and Try again';
 
     // If member role, welcome channel or interview roles arent set it will return error
     // Make a config checker to stop errors from startup
@@ -52,22 +52,22 @@ export default {
       !config.interviews.welcome_channel ||
       !config.interviews.interview_role
     )
-      return "Please check configurations";
+      return 'Please check configurations';
 
     if (message) {
       // Gets the user from mentions
       user = message.mentions.users?.first();
     } else {
       // Gets the user from mentions
-      user = msgInt.options.getUser("user") as User;
+      user = msgInt.options.getUser('user') as User;
     }
 
     if (!user) {
       // Sends a message to admin id the user cannot be found
-      userId = userId.replace(/[<@!>]/g, "");
+      userId = userId.replace(/[<@!>]/g, '');
       return await msgInt.reply({
         content: `Could not find a user with the ID "${userId}"`,
-        ephemeral: true,
+        ephemeral: true
       });
     }
 
@@ -82,7 +82,7 @@ export default {
       ) {
         return await msgInt.reply({
           content: `Member ${user} doesnt seem to have the interview role or is already accepted to the server. Please check the member or role and try again`,
-          ephemeral: true,
+          ephemeral: true
         });
       }
       // Gets the welcome channel
@@ -97,9 +97,9 @@ export default {
       if (id) {
         if (!config.pterodactyl) {
           logger.warn(
-            "Pterodactyl module has not been enabled or is missing from your config file"
+            'Pterodactyl module has not been enabled or is missing from your config file'
           );
-          return "Pterodactyl module has not been enabled or is missing from your config file";
+          return 'Pterodactyl module has not been enabled or is missing from your config file';
         }
 
         await whitelist(ign, config.pterodactyl);
@@ -126,7 +126,7 @@ export default {
         const link = await checkLink(mojangId);
         if (link) {
           return await msgInt.reply(
-            "Link Already Exists, User has Been accepted"
+            'Link Already Exists, User has Been accepted'
           );
         }
 
@@ -136,15 +136,15 @@ export default {
         const member = guild?.members.cache.get(userId);
 
         const embed = new MessageEmbed()
-          .setColor("#0099ff")
+          .setColor('#0099ff')
           .setTitle(`Link Created and Member Accepted`)
           .setAuthor({
-            name: "Guardian Bot",
-            iconURL: "https://i.imgur.com/Yiexscu.png",
+            name: 'Guardian Bot',
+            iconURL: 'https://i.imgur.com/Yiexscu.png'
           })
           .addFields(
-            { name: "Discord Name", value: `${member}`, inline: true },
-            { name: "IGN", value: `${ign}`, inline: true }
+            { name: 'Discord Name', value: `${member}`, inline: true },
+            { name: 'IGN', value: `${ign}`, inline: true }
           )
           .setImage(`https://crafatar.com/renders/body/${mojangId}?scale=3`)
           .setTimestamp();
@@ -153,7 +153,7 @@ export default {
       }
     } catch (error) {
       logger.error(error);
-      return "An error has occured please try again";
+      return 'An error has occured please try again';
     }
-  },
+  }
 } as ICommand;

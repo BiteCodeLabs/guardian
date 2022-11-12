@@ -1,6 +1,6 @@
-import axios from "axios";
-import logger from "./logger";
-import { MinecraftUser } from "../types";
+import axios from 'axios';
+import logger from './logger';
+import { MinecraftUser } from '../types';
 
 // This queries the Mojang API for a users ID
 export async function getId(ign: string) {
@@ -13,7 +13,7 @@ export async function getId(ign: string) {
     const data = addDashes(response.id);
     return data;
   } catch (error) {
-    logger.error("Error trying to get mojang user id", error);
+    logger.error('Error trying to get mojang user id', error);
   }
 }
 
@@ -27,14 +27,14 @@ export async function getIGN(id: string) {
 
     return response as MinecraftUser;
   } catch (error) {
-    logger.error("Error trying to get mojang user id");
+    logger.error('Error trying to get mojang user id');
   }
 }
 
 function addDashes(id: string) {
   const regex =
     /([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)/g;
-  const subst = "$1-$2-$3-$4-$5";
+  const subst = '$1-$2-$3-$4-$5';
   const newId = id.replace(regex, subst);
   return newId;
 }

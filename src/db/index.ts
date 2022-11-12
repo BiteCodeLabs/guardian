@@ -1,34 +1,34 @@
-import Keyv from "keyv";
-import { LinkData } from "../types";
-import logger from "../modules/logger";
+import Keyv from 'keyv';
+import { LinkData } from '../types';
+import logger from '../modules/logger';
 
-export const linkStore = new Keyv("sqlite://database.sqlite", {
-  table: "link_store",
+export const linkStore = new Keyv('sqlite://database.sqlite', {
+  table: 'link_store',
   busyTimeout: 10000,
   serialize: JSON.stringify,
-  deserialize: JSON.parse,
+  deserialize: JSON.parse
 });
 
-export const interactionStore = new Keyv("sqlite://database.sqlite", {
-  table: "interaction_store",
+export const interactionStore = new Keyv('sqlite://database.sqlite', {
+  table: 'interaction_store',
   busyTimeout: 10000,
   serialize: JSON.stringify,
-  deserialize: JSON.parse,
+  deserialize: JSON.parse
 });
 
 export const timeoutCache = new Keyv();
 
-linkStore.on("error", (err: any) => {
+linkStore.on('error', (err: any) => {
   logger.error(
-    "Connection Error while trying to connect to links sqlite store",
+    'Connection Error while trying to connect to links sqlite store',
     err
   );
   process.exit(1);
 });
 
-interactionStore.on("error", (err: any) => {
+interactionStore.on('error', (err: any) => {
   logger.error(
-    "Connection Error while trying to connect to interactions sqlite store",
+    'Connection Error while trying to connect to interactions sqlite store',
     err
   );
   process.exit(1);
@@ -47,7 +47,7 @@ export async function createLink(mojangId: string, discordId: string) {
   const link = {
     discordId: discordId,
     gracePeriod: grace,
-    mojangId: mojangId,
+    mojangId: mojangId
   };
 
   await linkStore.set(mojangId, link);
@@ -55,7 +55,7 @@ export async function createLink(mojangId: string, discordId: string) {
 }
 // Removes link from the table
 export async function removeLink(mojangId: string) {
-  logger.info("Removing link: ", mojangId);
+  logger.info('Removing link: ', mojangId);
   await linkStore.delete(mojangId);
 }
 
