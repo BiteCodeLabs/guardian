@@ -19,7 +19,7 @@ export default (client: Client) => {
           if (!ign) return;
           await unwhitelist(ign.name, config.pterodactyl);
           consoleChannel.send(
-            `${member.displayName} has left the server, thier link has been removed`
+            `${member.displayName} has left the server, their link has been removed`
           );
         }
       }
