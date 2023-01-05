@@ -22,8 +22,8 @@ export async function inactive(guild: Guild, client: Client) {
       logger.warn("There is no inactivity message configured");
 
     for await (const [key, value] of linkStore.iterator()) {
-      const member = guild.members.cache.get(key);
-      if (!member) return logger.warn(`Could not get the member ${key}`);
+      const member = guild.members.cache.get(value);
+      if (!member) return logger.warn(`Could not get the member ${value}`);
 
       if (value.gracePeriod > Date.now()) {
         return logger.info(
