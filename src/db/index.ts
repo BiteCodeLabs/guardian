@@ -1,13 +1,8 @@
 import Keyv from "keyv";
-import { LinkData } from "../types";
 import logger from "../modules/logger";
+import { PrismaClient } from "@prisma/client";
 
-export const linkStore = new Keyv("sqlite://database.sqlite", {
-  table: "link_store",
-  busyTimeout: 10000,
-  serialize: JSON.stringify,
-  deserialize: JSON.parse,
-});
+export const prisma = new PrismaClient();
 
 export const interactionStore = new Keyv("sqlite://database.sqlite", {
   table: "interaction_store",
@@ -17,14 +12,6 @@ export const interactionStore = new Keyv("sqlite://database.sqlite", {
 });
 
 export const timeoutCache = new Keyv();
-
-linkStore.on("error", (err: any) => {
-  logger.error(
-    "Connection Error while trying to connect to links sqlite store",
-    err
-  );
-  process.exit(1);
-});
 
 interactionStore.on("error", (err: any) => {
   logger.error(
@@ -36,8 +23,12 @@ interactionStore.on("error", (err: any) => {
 
 // Checks the link of a given user
 export async function checkLink(mojangId: string) {
-  const data = await linkStore.get(mojangId);
-  return data as LinkData;
+  const data = await prisma.links.findFirst({
+    where: {
+      mojang_id: mojangId,
+    },
+  });
+  return data;
 }
 
 // Adds a link to the sqlite database
@@ -50,13 +41,23 @@ export async function createLink(mojangId: string, discordId: string) {
     mojangId: mojangId,
   };
 
-  await linkStore.set(mojangId, link);
+  await prisma.links.create({
+    data: {
+      mojang_id: mojangId,
+      discord_id: discordId,
+      gracePeriod: grace,
+    },
+  });
   logger.info(`Added ${mojangId}, ${link.discordId} to store`);
 }
-// Removes link from the table
-export async function removeLink(mojangId: string) {
-  logger.info("Removing link: ", mojangId);
-  await linkStore.delete(mojangId);
+
+export async function removeLink(id: number) {
+  await prisma.links.delete({
+    where: {
+      id: id,
+    },
+  });
+  logger.info("Removed link");
 }
 
 export async function storeApplication(messageId: string, memberId: string) {

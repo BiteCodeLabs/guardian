@@ -32,7 +32,7 @@ export const guild = client.guilds.fetch(config.bot.server);
 // Once the client has connected to discord this function will configure the WOK command handler
 
 client.on("ready", async () => {
-  if (config.plan.inactivity.enabled) {
+  if (config.plan.inactivity.enabled && config.pterodactyl) {
     schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
       await inactive(await guild, client);
     });
