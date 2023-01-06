@@ -2,9 +2,9 @@ import logger from "../modules/logger";
 import { ICommand } from "wokcommands";
 import { getId } from "../modules/mojang";
 import { MessageEmbed } from "discord.js";
-import { linkStore } from "../db";
 import { unwhitelist } from "../modules/ptero";
 import { config } from "..";
+import { prisma } from "../db";
 
 // Create sub command to make it easier to add and remove links
 
@@ -49,11 +49,19 @@ export default {
       logger.error("Invalid Minecraft IGN check");
       return "An error occured while trying to link user please check if the ign you provided is valid";
     }
+    const link = await prisma.links.findFirst({
+      where: {
+        mojang_id: mojangId,
+      },
+    });
 
     if (msgInt.guild!.id && userId) {
       try {
-        await linkStore.delete(mojangId);
-        console.log(await linkStore.get(mojangId));
+        await prisma.links.delete({
+          where: {
+            id: link?.id,
+          },
+        });
         const member = guild?.members.cache.get(userId);
 
         const embed = new MessageEmbed()

@@ -1,7 +1,6 @@
 import { config } from "..";
 import logger from "../modules/logger";
 import { ICommand } from "wokcommands";
-import { MinecraftUser } from "../types";
 import { getId } from "../modules/mojang";
 import { MessageEmbed } from "discord.js";
 import { whitelist } from "../modules/ptero";

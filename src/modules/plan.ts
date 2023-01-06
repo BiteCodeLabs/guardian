@@ -1,6 +1,6 @@
 import { config } from "..";
 import logger from "./logger";
-import { prisma } from "../db";
+import { prisma, removeLink } from "../db";
 import { Client, Guild, TextChannel } from "discord.js";
 
 // Checks for user in Plan DB if it does not exist it removes them from the database
@@ -37,26 +37,30 @@ export async function inactive(guild: Guild, client: Client) {
       });
       if (user) return;
 
-      const member = await guild.members.fetch(element.discord_id);
+      try {
+        const member = await guild.members.fetch(element.discord_id);
 
-      if (element.gracePeriod > Date.now())
-        return logger.info(
-          `User ${member.displayName} is still in their grace period skipping`
-        );
+        if (element.gracePeriod > Date.now())
+          return logger.info(
+            `User ${member.displayName} is still in their grace period skipping`
+          );
 
-      if (
-        !member.roles.cache.some(
-          (role) => role.id === config.plan.inactivity.vaction_role
-        )
-      ) {
-        consoleChannel.send(`Removing ${member} from server`);
-        logger.info(`Removing ${member.displayName} from server`);
-        await member.send(config.plan.inactivity.message);
-        await guild.members.kick(member);
+        if (
+          !member.roles.cache.some(
+            (role) => role.id === config.plan.inactivity.vaction_role
+          )
+        ) {
+          consoleChannel.send(`Removing ${member} from server`);
+          logger.info(`Removing ${member.displayName} from server`);
+          await member.send(config.plan.inactivity.message);
+          await guild.members.kick(member);
+          await removeLink(element.id);
+        }
+      } catch (error) {
+        logger.error(error);
+        logger.error("Could not find user with id", element.mojang_id);
         await prisma.links.delete({
-          where: {
-            id: element.id,
-          },
+          where: { id: element.id },
         });
       }
     });

@@ -51,6 +51,15 @@ export async function createLink(mojangId: string, discordId: string) {
   logger.info(`Added ${mojangId}, ${link.discordId} to store`);
 }
 
+export async function removeLink(id: number) {
+  await prisma.links.delete({
+    where: {
+      id: id,
+    },
+  });
+  logger.info("Removed link");
+}
+
 export async function storeApplication(messageId: string, memberId: string) {
   await interactionStore.set(messageId, memberId);
   logger.info(`Added ${messageId}, ${memberId} to store`);
