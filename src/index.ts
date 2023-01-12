@@ -1,22 +1,21 @@
-import fs from "fs";
 import path from "path";
-import YAML from "js-yaml";
 import WOK from "wokcommands";
-import { Config } from "./types";
-import schedule from "node-schedule";
+import { config } from "dotenv";
+import io from "socket.io-client";
 import logger from "./modules/logger";
-import { inactive } from "./modules/plan";
 import { Client, Intents } from "discord.js";
+import { BanUserEvent } from "./types";
 
-export const config = YAML.load(
-  fs.readFileSync("config/config.yml", "utf-8")
-) as Config;
+config();
 
-if (!config) {
-  logger.error("No config file detected");
-  process.exit(1);
-}
-// Import bot intents needed
+type EventMessage = {
+  msg: string;
+};
+
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const BOT_OWNER = process.env.BOT_OWNER;
+const BOT_TEST_SERVER = process.env.BOT_TEST_SERVER;
+const MONGO_URI = process.env.MONGO_URI;
 
 export const client = new Client({
   intents: [
@@ -28,27 +27,29 @@ export const client = new Client({
   ],
 });
 
-export const guild = client.guilds.fetch(config.bot.server);
-// Once the client has connected to discord this function will configure the WOK command handler
-
 client.on("ready", async () => {
-  if (config.plan.inactivity.enabled && config.pterodactyl) {
-    schedule.scheduleJob({ hour: 0, minute: 0 }, async function () {
-      await inactive(await guild, client);
-    });
-  }
-
-  client.user!.setActivity(config.bot.status, { type: "WATCHING" });
-
   new WOK(client, {
-    featureDir: path.join(__dirname, "events"),
     commandDir: path.join(__dirname, "commands"),
-    testServers: [config.bot.server],
-    botOwners: [config.bot.owner],
-    typeScript: false,
-  }).setDefaultPrefix(config.bot.prefix);
+    testServers: "1048676975897739386",
+    botOwners: "203121159393247232",
+    mongoUri: MONGO_URI,
+    typeScript: true,
+  });
+
+  const socket = io("http://localhost:3000");
+
+  // client-side
+  socket.on("connect", () => {
+    console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+  });
+
+  socket.on("test", (event: BanUserEvent) => {
+    console.log(event);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(socket.id); // undefined
+  });
 });
 
-//Connects the client to discord
-
-client.login(config.bot.token).then((r) => logger.info("Guardian Is Alive"));
+client.login(BOT_TOKEN).then((r) => logger.info("Guardian Is Alive"));
